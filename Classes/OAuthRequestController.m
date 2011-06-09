@@ -30,8 +30,12 @@ NSString *const OAuthRefreshedAccessTokenNotification = @"OAuthRefreshedAccessTo
 
     oauthClient.debug = YES;
     oauthClient.delegate = self;    
-    oauthClient.userURL  = [NSURL URLWithString:@"https://graph.facebook.com/oauth/authorize"];
-    oauthClient.tokenURL = [NSURL URLWithString:@"https://graph.facebook.com/oauth/access_token"];
+	//oauthClient.userURL  = [NSURL URLWithString:@"http://test.ccci.us:8881/oauth/authorize"];
+	//oauthClient.tokenURL = [NSURL URLWithString:@"http://test.ccci.us:8881/oauth/access_token"];
+	oauthClient.userURL  = [NSURL URLWithString:@"http://hub.ccci.us/oauth/authorize"];
+	oauthClient.tokenURL = [NSURL URLWithString:@"http://hub.ccci.us/oauth/access_token"];
+    //oauthClient.userURL  = [NSURL URLWithString:@"https://graph.facebook.com/oauth/authorize"];
+    //oauthClient.tokenURL = [NSURL URLWithString:@"https://graph.facebook.com/oauth/access_token"];
     
     self.modalPresentationStyle = UIModalPresentationFormSheet;
     self.modalTransitionStyle   = UIModalTransitionStyleCrossDissolve;

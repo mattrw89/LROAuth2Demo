@@ -11,11 +11,17 @@
 
 @class LROAuth2AccessToken;
 
-@interface LROAuth2DemoViewController : UITableViewController <ASIHTTPRequestDelegate> {
+@interface LROAuth2DemoViewController : UIViewController <ASIHTTPRequestDelegate, UITableViewDelegate,UITableViewDataSource, UISearchBarDelegate> {
+	IBOutlet UISearchBar* search;
+	IBOutlet UITableView* recentSearchesTable;
   LROAuth2AccessToken *accessToken;
   NSArray *friends;
   NSMutableData *_data;
+	//IBOutlet UIView* myView;
 }
+@property (nonatomic, retain) UISearchBar* search;
+@property (nonatomic, retain) UITableView* recentSearchesTable;
+//@property (nonatomic, retain) UIView* myView;
 @property (nonatomic, retain) LROAuth2AccessToken *accessToken;
 @property (nonatomic, retain) NSArray *friends;
 

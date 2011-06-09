@@ -20,11 +20,16 @@ NSString * AccessTokenSavePath() {
 
 @implementation LROAuth2DemoViewController
 
+@synthesize search;
+@synthesize recentSearchesTable;
+//@synthesize myView;
 @synthesize accessToken;
 @synthesize friends;
 
 - (void)viewDidLoad 
 {
+	NSLog(@"View did load in LROOauth2DemoViewController");
+	self.title = @"Search for Schools";
   [super viewDidLoad];
   
   /*
@@ -41,7 +46,7 @@ NSString * AccessTokenSavePath() {
 {
   // try and load an existing access token from disk
   self.accessToken = [NSKeyedUnarchiver unarchiveObjectWithFile:AccessTokenSavePath()];
-
+	NSLog(@"access token at start?  %@",self.accessToken);
   // check if we have a valid access token before continuing otherwise obtain a token
   if (self.accessToken == nil) { 
     [self beginAuthorization];
@@ -90,8 +95,10 @@ NSString * AccessTokenSavePath() {
 
 - (void)loadFacebookFriends;
 {
-  NSString *URLString = [NSString stringWithFormat:@"https://graph.facebook.com/me/friends?access_token=%@", [self.accessToken.accessToken stringByEscapingForURLQuery]];
-  NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:URLString]];
+	//NSString *URLString = [NSString stringWithFormat:@"http://test.ccci.us:8881/api/schools?oauth_token=%@&term=%@&scope=userinfo", [self.accessToken.accessToken stringByEscapingForURLQuery],[search.text stringByEscapingForURLQuery]];
+	NSString *URLString = [NSString stringWithFormat:@"http://hub.ccci.us/api/schools?oauth_token=%@&term=%@", [self.accessToken.accessToken stringByEscapingForURLQuery],[search.text stringByEscapingForURLQuery]];
+	NSLog(@"API Call %@", URLString);
+	NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:URLString]];
   [_data release]; _data = nil;
   _data = [[NSMutableData alloc] init];
 
@@ -111,11 +118,12 @@ NSString * AccessTokenSavePath() {
   
   NSError *jsonError = nil;
   NSDictionary *friendsData = [_data yajl_JSON];
+	NSLog(@"api return dictionary %@", friendsData);
   if (jsonError) {
     NSLog(@"JSON parse error: %@", jsonError);
   } else {
-    self.friends = [friendsData valueForKey:@"data"];
-    [self.tableView reloadData];
+    self.friends = [friendsData valueForKey:@"school"];
+    [recentSearchesTable reloadData];
   }
 }
 
@@ -141,6 +149,23 @@ NSString * AccessTokenSavePath() {
   NSDictionary *friend = [self.friends objectAtIndex:indexPath.row];
   cell.textLabel.text = [friend valueForKey:@"name"];
   return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	// open a alert with an OK and cancel button
+	NSDictionary* friend = [self.friends objectAtIndex:indexPath.row];
+	NSString *alertString = [NSString stringWithFormat:@"School Address: \n %@ \n %@, %@ %@", [friend valueForKey:@"address1"], [friend valueForKey:@"city"], [friend valueForKey:@"state"],[friend valueForKey:@"zip"]];
+	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:alertString message:@"" delegate:self cancelButtonTitle:@"Done" otherButtonTitles:nil];
+	[alert show];
+	[alert release];
+}
+
+#pragma mark -
+#pragma mark UISearchBarDelegate methods
+
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+	[self loadFacebookFriends];
 }
 
 @end

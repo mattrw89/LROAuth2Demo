@@ -16,9 +16,13 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
-    
-  [window addSubview:viewController.view];
-  [window makeKeyAndVisible];
+	UINavigationController* navController = [[UINavigationController alloc] init];
+	
+	LROAuth2DemoViewController* viewCont = [[LROAuth2DemoViewController alloc] initWithNibName:@"LROAuth2DemoViewController" bundle:[NSBundle mainBundle]]; 
+	[navController pushViewController:viewCont animated:YES];
+	[viewCont release];
+	[window addSubview:navController.view];
+	[window makeKeyAndVisible];
 
 	return YES;
 }
